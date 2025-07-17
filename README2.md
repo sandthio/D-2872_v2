@@ -55,3 +55,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 }
 ```
+
+
+### E. Seed Sample Inventory
+File: BootStrapData.java
+  Lines: ~32-87
+  Combined condition: combined all three counts (partRepository, outsourcedPartRepository, and productRepository) into one if so the seeder only runs when every table is empty.
+  Used partRepository.saveAll(...) and outsourcedPartRepository.saveAll(...)
+
+File: Product.java
+  Created 5 products: SuperBot, MechaKnight, RoboHero, UltraGuard, CyberNinja
+  Loaded only if productRepository.count() == 0
+
+File: Part.java
+  Added private int minInv and private int maxInv with @Column(nullable = false, ...).
+  Annotated class with @ValidInventory and supplied getters/setters.
