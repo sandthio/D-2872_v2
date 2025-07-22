@@ -16,11 +16,11 @@ import java.util.Set;
  *
  */
 @Entity
-@ValidInventory
 @ValidDeletePart
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="part_type",discriminatorType = DiscriminatorType.INTEGER)
 @Table(name="Parts")
+@ValidInventory
 public abstract class Part implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,12 +31,11 @@ public abstract class Part implements Serializable {
     @Min(value = 0, message = "Inventory value must be positive")
     int inv;
     // ← new: minimum allowed inventory
-    @Column(nullable = false, columnDefinition = "integer default 0")
-    private int minInv;
-
+    @Min(value = 0, message = "Min Inventory value must be positive")
+    int minInv;
     // ← new: maximum allowed inventory
-    @Column(nullable = false, columnDefinition = "integer default 1")
-    private int maxInv;
+    @Min(value = 0, message = "Max Inventory value must be positive")
+    int maxInv;
 
     @ManyToMany
     @JoinTable(name="product_part", joinColumns = @JoinColumn(name="part_id"),

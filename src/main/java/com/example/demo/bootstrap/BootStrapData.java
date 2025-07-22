@@ -38,21 +38,21 @@ public class BootStrapData implements CommandLineRunner {
             leftArm.setName("Left Arm");
             leftArm.setPrice(5.00);
             leftArm.setInv(20);
-            leftArm.setMinInv(5);
+            leftArm.setMinInv(1);
             leftArm.setMaxInv(25);
 
             InhousePart rightArm = new InhousePart();
             rightArm.setName("Right Arm");
             rightArm.setPrice(5.00);
             rightArm.setInv(20);
-            rightArm.setMinInv(5);
+            rightArm.setMinInv(1);
             rightArm.setMaxInv(25);
 
             InhousePart torso = new InhousePart();
             torso.setName("Torso");
             torso.setPrice(8.00);
             torso.setInv(20);
-            torso.setMinInv(5);
+            torso.setMinInv(1);
             torso.setMaxInv(25);
 
             partRepository.saveAll(List.of(leftArm, rightArm, torso));
@@ -62,7 +62,7 @@ public class BootStrapData implements CommandLineRunner {
             helmet.setName("Helmet");
             helmet.setPrice(7.00);
             helmet.setInv(10);
-            helmet.setMinInv(5);
+            helmet.setMinInv(1);
             helmet.setMaxInv(15);
             helmet.setCompanyName("ToyTech Ltd.");
 
@@ -70,7 +70,7 @@ public class BootStrapData implements CommandLineRunner {
             cape.setName("Cape");
             cape.setPrice(4.00);
             cape.setInv(10);
-            cape.setMinInv(5);
+            cape.setMinInv(1);
             cape.setMaxInv(15);
             cape.setCompanyName("SuperThreads Inc.");
 
