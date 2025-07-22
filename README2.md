@@ -55,18 +55,76 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 }
 ```
-
-
+```
 ### E. Seed Sample Inventory
-File: BootStrapData.java
-  Lines: ~32-87
-  Combined condition: combined all three counts (partRepository, outsourcedPartRepository, and productRepository) into one if so the seeder only runs when every table is empty.
+- File: `src/main/java/com/example/demo/controllers/MainScreenController.java`
+- Lines: ~13, ~51
+- Change: Added mapping for `/about`
+
+- File: `BootStrapData.java`
+- Lines: ~32-87
+- Change: Combined condition: combined all three counts (partRepository, outsourcedPartRepository, and productRepository) into one if so the seeder only runs when every table is empty.
   Used partRepository.saveAll(...) and outsourcedPartRepository.saveAll(...)
+```
+```
+- File: `Product.java`
+- Change: Created 5 products: (SuperBot, MechaKnight, RoboHero, UltraGuard, CyberNinja), Loaded only if productRepository.count() == 0
+```
+```
+- File: Part.java
+- Change: Added private int minInv and private int maxInv with @Column(nullable = false, ...) & Annotated class with @ValidInventory and supplied getters/setters.
+```
 
-File: Product.java
-  Created 5 products: SuperBot, MechaKnight, RoboHero, UltraGuard, CyberNinja
-  Loaded only if productRepository.count() == 0
 
-File: Part.java
-  Added private int minInv and private int maxInv with @Column(nullable = false, ...).
-  Annotated class with @ValidInventory and supplied getters/setters.
+### F. “Buy Now” Button & Purchase Flow
+
+- File: `src/main/resources/templates/mainscreen.html`
+- Line: ~92
+- Change: Inserted Buy Now link
+```html
+<a th:href="@{/buyproduct(productID=${tempProduct.id})}" class="btn btn-success btn-sm">Buy Now</a>
+```
+- File: `src/main/java/com/example/demo/domain/Product.java`
+- Line: 108
+- Change: Added `buyProduct()` method
+```java
+public boolean buyProduct() {
+    if (inv > 0) { inv--; return true; }
+    return false;
+}
+```
+- File: `src/main/java/com/example/demo/controllers/AddProductController.java
+- Changes: Implemented the decrement of the inventory of product by one.
+```java
+    @GetMapping("/buyproduct")
+    public String buyproduct(@RequestParam("productID") int theId, Model theModel) {
+        // initialize productService bean through spring context
+        ProductService productService = context.getBean(ProductServiceImpl.class);
+        //creating a product object called product
+        Product product = productService.findById(theId);
+        //creating a variable to store the value of inventory
+        int inv = product.getInv();
+
+         //checking to see if inv value is 0
+         if (inv == 0)
+         {
+             //returning failure.html page
+             return "Failure";
+         }
+         else
+         {
+             //reduce inv value by 1 and set new value for inventory
+             product.setInv(inv - 1);
+
+             //save product object with new inventory value
+             productService.save(product);
+
+             //returning success.html page
+             return "Success";
+         }
+    }
+```
+- Files Created:
+    - `Failure.html`
+    - `Success.html`
+    - 
