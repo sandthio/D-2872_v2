@@ -199,3 +199,48 @@ lines: ~41-42, ~48-49, ~55-56, ~65-66 ~73-74
 - Change: Added max and Min to table
 - Lines: `41-42, ~51-52
 ```
+
+```
+### H. Inventory Validation Between Min and Max
+
+Added validation to ensure a part's inventory stays within its defined minimum and maximum bounds.
+
+- File: src/main/java/com/example/demo/domain/Part.java
+- Line: ~35-38
+- Changes:
+```java
+int minInv;
+int maxInv;
+
+@Min(value = 0, message = "Min Inventory value must be positive")
+int minInv;
+
+@Min(value = 0, message = "Max Inventory value must be positive")
+int maxInv;
+```
+
+- File: src/main/java/com/example/demo/validators/InventoryValidator.java
+- Line:~10-end
+- Changes:
+```java
+@Override
+public boolean isValid(Part part, ConstraintValidatorContext context) {
+    boolean isValid = true;
+
+    if (part.getInv() > part.getMaxInv()) {
+        context.buildConstraintViolationWithTemplate(
+            "Solution: Fix your Inventory, it is greater than the max inventory"
+        ).addConstraintViolation();
+        isValid = false;
+    }
+
+    if (part.getInv() < part.getMinInv()) {
+        context.buildConstraintViolationWithTemplate(
+            "Solution: Raise your Inventory, it is less than the min inventory"
+        ).addConstraintViolation();
+        isValid = false;
+    }
+
+    return isValid;
+}
+```
