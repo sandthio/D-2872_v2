@@ -52,46 +52,50 @@ public class AddProductController {
     public String submitForm(@Valid @ModelAttribute("product") Product product, BindingResult bindingResult, Model theModel) {
         theModel.addAttribute("product", product);
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             ProductService productService = context.getBean(ProductServiceImpl.class);
-            Product product2 = new Product();
+            Product existingProduct = new Product();
             try {
-                product2 = productService.findById((int) product.getId());
+                existingProduct = productService.findById((int) product.getId());
             } catch (Exception e) {
-                System.out.println("Error Message " + e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
+
             theModel.addAttribute("parts", partService.findAll());
-            List<Part>availParts=new ArrayList<>();
-            for(Part p: partService.findAll()){
-                if(!product2.getParts().contains(p))availParts.add(p);
+
+            List<Part> availParts = new ArrayList<>();
+            for (Part p : partService.findAll()) {
+                if (!existingProduct.getParts().contains(p)) availParts.add(p);
             }
-            theModel.addAttribute("availparts",availParts);
-            theModel.addAttribute("assparts",product2.getParts());
+
+            theModel.addAttribute("availparts", availParts);
+            theModel.addAttribute("assparts", existingProduct.getParts());
             return "productForm";
         }
- //       theModel.addAttribute("assparts", assparts);
- //       this.product=product;
-//        product.getParts().addAll(assparts);
-        else {
-            ProductService repo = context.getBean(ProductServiceImpl.class);
-            if(product.getId()!=0) {
-                Product product2 = repo.findById((int) product.getId());
-                PartService partService1 = context.getBean(PartServiceImpl.class);
-                if(product.getInv()- product2.getInv()>0) {
-                    for (Part p : product2.getParts()) {
-                        int inv = p.getInv();
-                        p.setInv(inv - (product.getInv() - product2.getInv()));
-                        partService1.save(p);
-                    }
+
+        ProductService productService = context.getBean(ProductServiceImpl.class);
+        PartService partService = context.getBean(PartServiceImpl.class);
+
+        if (product.getId() != 0) {
+            Product existing = productService.findById((int) product.getId());
+            int delta = product.getInv() - existing.getInv();
+
+            if (delta > 0 && !existing.getParts().isEmpty()) {
+                int deduction = delta / existing.getParts().size();
+
+                for (Part p : existing.getParts()) {
+                    p.setInv(p.getInv() - deduction);
+                    partService.save(p);
                 }
             }
-            else{
-                product.setInv(0);
-            }
-            repo.save(product);
-            return "confirmationaddproduct";
+        } else {
+            product.setInv(0);
         }
+
+        productService.save(product);
+        return "confirmationaddproduct";
     }
+
 
     @GetMapping("/showProductFormForUpdate")
     public String showProductFormForUpdate(@RequestParam("productID") int theId, Model theModel) {
@@ -112,7 +116,7 @@ public class AddProductController {
         return "productForm";
     }
 
-    @GetMapping("/deleteproduct")
+    @GetMapping("/delProd")
     public String deleteProduct(@RequestParam("productID") int theId, Model theModel) {
         ProductService productService = context.getBean(ProductServiceImpl.class);
         Product product2=productService.findById(theId);

@@ -16,31 +16,37 @@ import java.util.Set;
  *
  */
 @Entity
-@ValidDeletePart
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="part_type",discriminatorType = DiscriminatorType.INTEGER)
-@Table(name="Parts")
 @ValidInventory
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="part_type", discriminatorType = DiscriminatorType.INTEGER)
+@Table(name="Parts")
 public abstract class Part implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
+
     String name;
+
     @Min(value = 0, message = "Price value must be positive")
     double price;
+
     @Min(value = 0, message = "Inventory value must be positive")
     int inv;
-    // ← new: minimum allowed inventory
+
     @Min(value = 0, message = "Min Inventory value must be positive")
     int minInv;
-    // ← new: maximum allowed inventory
+
     @Min(value = 0, message = "Max Inventory value must be positive")
     int maxInv;
 
     @ManyToMany
-    @JoinTable(name="product_part", joinColumns = @JoinColumn(name="part_id"),
-            inverseJoinColumns=@JoinColumn(name="product_id"))
-    Set<Product> products= new HashSet<>();
+    @JoinTable(
+            name = "product_part",
+            joinColumns = @JoinColumn(name = "part_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    Set<Product> products = new HashSet<>();
+
 
     public Part() {
     }
@@ -110,7 +116,6 @@ public abstract class Part implements Serializable {
 
         return id == part.id;
     }
-
     public int getMinInv() {
         return minInv;
     }
