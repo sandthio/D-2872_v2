@@ -127,4 +127,74 @@ public boolean buyProduct() {
 - Files Created:
     - `Failure.html`
     - `Success.html`
-    - 
+
+
+### G. Min/Max Inventory Fields and Validation
+Modified the parts to track maximum and minimum inventory:
+
+- File: `src/main/java/com/example/demo/domain/Part.java`  
+- Lines: ~23, ~34-35, ~37-38
+- Changes:
+```java
+@Min(value = 0, message = "Min Inventory value must be positive")
+int minInv;
+
+@Min(value = 0, message = "Max Inventory value must be positive")
+int maxInv;
+```
+
+- File: `src/main/resources/templates/InhousePartForm.html`   
+- Changes:
+Added these fields before the submit button:
+```html
+<p><input type="submit" value="Submit" /></p>
+<p>Min Inventory<input type="text" path="minInv" th:field="*{minInv}" placeholder="Min Inventory" class="form-control mb-4 col-4"/></p>
+<p th:if="${#fields.hasErrors('minInv')}" th:errors="*{minInv}">Min Inventory Error</p>
+
+<p>Max Inventory<input type="text" path="maxInv" th:field="*{maxInv}" placeholder="Max Inventory" class="form-control mb-4 col-4"/></p>
+<p th:if="${#fields.hasErrors('maxInv')}" th:errors="*{maxInv}">Max Inventory Error</p>
+
+<div  th:if="${#fields.hasAnyErrors()}">
+  <ul>
+    <li th:each="err:${#fields.allErrors()}"th:text="${err}">
+    </li>
+  </ul>
+</div>
+
+<p><input type="submit" value="Submit" /></p>
+
+```
+
+- File:** `src/main/java/com/example/demo/config/BootStrapData.java`  
+- Changes:
+Update the seed data with values for `minInv` and `maxInv` when creating part objects:
+lines: ~41-42, ~48-49, ~55-56, ~65-66 ~73-74
+
+- File: `src/main/java/com/example/demo/validators/InventoryValidator.java`  
+- Validation Logic: Lines ~14-24, ~26- end
+```java
+   public boolean isValid(Part part, ConstraintValidatorContext constraintValidatorContext) {
+
+    //create code to make sure that inventory is between min and max value
+    if (part.getInv() > part.getMaxInv()) {
+        //display error message when inventory is greater than the max inventory
+        constraintValidatorContext.buildConstraintViolationWithTemplate("Solution: Fix your Inventory, it is greater than the max inventory").addConstraintViolation();
+        return false;
+    } else if (part.getInv() < part.getMinInv()) {
+        //display error message when inventory is less than the min inventory
+        constraintValidatorContext.buildConstraintViolationWithTemplate("Solution: Raise your Inventory, it is less than the min inventory").addConstraintViolation();
+        return false;
+    } else {
+        return true;
+    }
+}
+```
+
+- File: `src/main/java/com/example/demo/domain/Part.java`  
+- change: Added class-level Annotation: line ~19 java , @ValidInventory
+``` 
+```
+- File: `src/main/resources/templates/mainscreen.html`
+- Change: Added max and Min to table
+- Lines: `41-42, ~51-52
+```
