@@ -144,7 +144,8 @@ int maxInv;
 ```
 
 - File: `src/main/resources/templates/InhousePartForm.html`   
-- Changes:
+- File: `src/main/resources/templates/OutSousePartForm.html`
+- Changes to both files:
 Added these fields before the submit button:
 ```html
 <p><input type="submit" value="Submit" /></p>
