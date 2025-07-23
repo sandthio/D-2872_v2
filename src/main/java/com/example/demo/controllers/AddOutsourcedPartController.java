@@ -32,7 +32,7 @@ public class AddOutsourcedPartController {
 
     @GetMapping("/showFormAddOutPart")
     public String showFormAddOutsourcedPart(Model theModel){
-        Part part=new OutsourcedPart();
+        OutsourcedPart part=new OutsourcedPart();
         theModel.addAttribute("outsourcedpart",part);
         return "OutsourcedPartForm";
     }
