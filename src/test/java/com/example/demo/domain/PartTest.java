@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,10 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PartTest {
     Part partIn;
     Part partOut;
+    Validator validator;
+
     @BeforeEach
     void setUp() {
         partIn=new InhousePart();
         partOut=new OutsourcedPart();
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();  // ← initialize validator
+        validator = factory.getValidator();
     }
     @Test
     void getId() {
@@ -155,5 +161,29 @@ class PartTest {
         partIn.setId(1l);
         partOut.setId(1l);
         assertEquals(partIn.hashCode(),partOut.hashCode());
+    }
+
+    @Test
+    void testMinInventoryCannotBeNegative() {
+        partIn.setName("Part A");
+        partIn.setPrice(5.0);
+        partIn.setInv(3);
+        partIn.setMinInv(-1);
+        partIn.setMaxInv(10);
+
+        Set<ConstraintViolation<Part>> violations = validator.validate(partIn);
+        assertEquals(true, violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("minInv")));
+    }
+
+    @Test
+    void testMaxInventoryCannotBeNegative() {
+        partOut.setName("Part B");
+        partOut.setPrice(5.0);
+        partOut.setInv(3);
+        partOut.setMinInv(0);
+        partOut.setMaxInv(-5);
+
+        Set<ConstraintViolation<Part>> violations = validator.validate(partOut);
+        assertEquals(true, violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("maxInv")));
     }
 }
