@@ -244,3 +244,17 @@ public boolean isValid(Part part, ConstraintValidatorContext context) {
     return isValid;
 }
 ```
+
+
+### I. Unit Tests for Min/Max Inventory Fields
+
+Added two unit tests to verify validation of minInv and maxInv fields.
+
+- File: src/test/java/com/example/demo/domain/PartTest.java
+- Lines:~166-end
+
+- Changes:
+  • Added validator setup using javax.validation API in setUp() method.
+  • Added testMinInventoryCannotBeNegative(): verifies a negative minInv triggers a constraint violation.
+  • Added testMaxInventoryCannotBeNegative(): verifies a negative maxInv triggers a constraint violation.
+
