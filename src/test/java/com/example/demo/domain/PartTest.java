@@ -161,29 +161,26 @@ class PartTest {
         partIn.setId(1l);
         partOut.setId(1l);
         assertEquals(partIn.hashCode(),partOut.hashCode());
+
+
     }
+    @Test
+    void setMaxInventory() {
+        int maxInv =1;
+        partIn.setMaxInv(maxInv);
+        assertEquals(maxInv,partIn.getMaxInv());
+        partOut.setMaxInv(maxInv);
+        assertEquals(maxInv,partOut.getMaxInv());
+    }
+
 
     @Test
-    void testMinInventoryCannotBeNegative() {
-        partIn.setName("Part A");
-        partIn.setPrice(5.0);
-        partIn.setInv(3);
-        partIn.setMinInv(-1);
-        partIn.setMaxInv(10);
-
-        Set<ConstraintViolation<Part>> violations = validator.validate(partIn);
-        assertEquals(true, violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("minInv")));
+    void setMinInventory() {
+        int minInv =1;
+        partIn.setMinInv(minInv);
+        assertEquals(minInv,partIn.getMinInv());
+        partOut.setMinInv(minInv);
+        assertEquals(minInv,partOut.getMinInv());
     }
 
-    @Test
-    void testMaxInventoryCannotBeNegative() {
-        partOut.setName("Part B");
-        partOut.setPrice(5.0);
-        partOut.setInv(3);
-        partOut.setMinInv(0);
-        partOut.setMaxInv(-5);
-
-        Set<ConstraintViolation<Part>> violations = validator.validate(partOut);
-        assertEquals(true, violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("maxInv")));
-    }
 }

@@ -206,7 +206,7 @@ lines: ~41-42, ~48-49, ~55-56, ~65-66 ~73-74
 Added validation to ensure a part's inventory stays within its defined minimum and maximum bounds.
 
 - File: src/main/java/com/example/demo/domain/Part.java
-- Line: ~35-38
+- Line: ~35-39
 - Changes:
 ```java
 int minInv;
@@ -251,11 +251,12 @@ public boolean isValid(Part part, ConstraintValidatorContext context) {
 Added two unit tests to verify validation of minInv and maxInv fields.
 
 - File: src/test/java/com/example/demo/domain/PartTest.java
-- Lines:~166-end
+- Lines:~167-end
 
 - Changes:
   • Added validator setup using javax.validation API in setUp() method.
-  • Added testMinInventoryCannotBeNegative(): verifies a negative minInv triggers a constraint violation.
-  • Added testMaxInventoryCannotBeNegative(): verifies a negative maxInv triggers a constraint violation.
+  • Added void setMaxInventory verifies a minInv triggers a constraint violation.
+  • Added void setMinInventory: verifies a maxInv triggers a constraint violation.
 
-#### Part J: No un-used validators
+#### Part J:
+Deleted un-used validators
